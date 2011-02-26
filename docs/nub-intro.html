@@ -1,0 +1,370 @@
+<html>
+    <head>
+        <title>Introduction to Nub</title>
+        <link rel="stylesheet" type="text/css" href="intro.css"/>
+        <!-- Syntax highlighting -->
+        <script src="syntax/shCore.js"></script>
+        <script src="syntax/shBrushJScript.js"></script>
+        <script src="syntax/shBrushXml.js"></script>
+        <link rel="stylesheet" type="text/css" href="syntax/shCore.css"/>
+        <link rel="stylesheet" type="text/css" href="syntax/shThemeDefault.css"/>
+        <script>SyntaxHighlighter.all();</script>
+    </head>
+    <body>
+    <h1 class="header">An introduction to Nub</h1>
+    <h2>What it is</h2>
+    <p>
+        <b>Nub</b> is a model-view-controller (MVC) plugin for jQuery.
+        It allows data stored in a central in-page model to be displayed at different places on the page (the <i>views</i>).
+        Updates made to the model data through the Nub controller are immediately reflected in the affected views.
+    </p>
+    <h2>First steps</h2>
+    <p>
+        Before using Nub on an HTML page, jQuery and the Nub plugin must be included in your page.
+        <pre class="brush: xml">
+            &lt;script src="jquery.js"&gt;&lt;/script&gt;
+            &lt;script src="jquery.nub.js"&gt;&lt;/script&gt;
+        </pre>
+    </p>
+    <h2>A simple example</h2>
+    <p>
+        Suppose you have a simple JSON object like the following:
+        <pre class="brush: js"> { "fruit":"banana" } </pre>
+        The object data can be stored in Nub's model with the following code:
+        <pre class="brush: js">
+            var data = { "fruit":"banana" };
+            $.nub.set('/favourite', data );
+        </pre>
+        This stores the object at the location <b>/favourite</b>.
+        We can now display the object's data somewhere within the page using the following HTML:
+        <pre class="brush: xml">
+            &lt;div class="nub-view" data="/favourite/fruit"&gt;&lt;/div&gt;
+        </pre>
+        This will result in something like the following being shown:
+        <div class="example-view">banana</div>
+        If we now change the data stored under <b>/favourite</b>:
+        <pre class="brush: js">
+            $.nub.set('/favourite', { "fruit":"pomegranate" }
+        </pre>
+        The value in the page will be updated appropriately:
+        <div class="example-view">pomegranate</div>
+    </p>
+    <h2>Nuts and bolts</h2>
+    <p>
+        The following sections delve a bit deeper into Nub's workings.
+    </p>
+    <h3>Initialization</h3>
+    <p>
+        When the page is loaded all views in the page are initiated using the following code:
+        <pre class="brush: js">
+            $.nub.init();
+        </pre>
+        (This code is usually placed inside a <code>$(document).ready(..)</code> callback function).
+    </p>
+    <p>
+        The <b>nub.init</b> method searches the page for any elements marked with the <b>nub-view</b> CSS class and does the
+        following:
+        <ul>
+            <li>If the element has a <b>data</b> attribute then the attribute value is used as the path to an item in the
+            Nub data model.
+            The element's content will be updated to the value stored in the model.
+            (Usually, this is just plain text but Nub can be used to set an element's HTML content this way).
+            </li>
+            <li>If any of the element's attributes have a value beginning with <b>nub:</b> then the rest of the attribute's
+            value is used as the path to a data item and the attribute's value is updated to the text value of that item in
+            the model.
+        </ul>
+    </p>
+    <h3>Data paths &amp; contexts</h3>
+    <p>
+        <b>Data paths</b> are used by Nub to identify the location in the model of a data value.
+        A data path is simply a sequence of object <b>property names</b> separated by forward slashes, e.g. as seen above:
+        <b>/favourite/fruit</b>.
+        Data paths can be absolute or relative.
+        Normally (as in the preceeding example) absolute paths are used, and begin with a forward slash.
+        However, sometimes it can be convenient to specify a data path as being relative to some other - presumably absolute - path.
+        This can be useful if a large number of paths need to be defined which all share the same prefix - i.e. if the paths
+        are all referencing different properties of the same object.
+        In this case, a <b>context path</b> can be used, and the <b>nub.init</b> function uses the <b>nub-context</b> CSS
+        class to identify context elements.
+    </p>
+    <p>
+        In the following example, a series of DIVs are used to display different properties of the same object.
+        A parent element with the <b>nub-context</b> class is used to provide a context path for each of the view elements.
+        <pre class="brush: xml">
+            &lt;div class="nub-context" data="/my-car"&gt;
+                &lt;div class="nub-view" data="registration"/&gt;
+                &lt;div class="nub-view" data="colour"/&gt;
+                &lt;div class="nub-view" data="doors"/&gt;
+            &lt;/div&gt;
+        </pre>
+        This results, for example, in the first element displaying the value stored at <b>/my-car/registration</b> in the model.
+    </p>
+    <h3 id="forms">Forms</h3>
+    <p>
+        Any form input can be turned into a model view by adding the <b>nub-view</b> class to the element:
+        <pre class="brush: xml">&lt;input class="nub-view" type="text" name="/favourite/colour"/&gt;</pre>
+        Inputs are handled a bit differently from other elements: the <b>name</b> attribute (instead of a data attribute)
+        is used as the data path; and the input's value is set to the data value.
+        Additional to displaying the value stored in the model, the input can now also be used to update the model.
+        If a new value is entered into the input then the value stored in the model is updated correspondingly
+        (and if other views are observing the same data item then they also will be updated).
+    </p>
+    <p>
+        Forms marked with the <b>nub-form</b> class on their FORM element get special treatment from Nub - the entire form is
+        turned into an in-page model.
+        This means that the form's inputs contain the actual values stored in the model, and in effect can be edited directly,
+        while other elements in the page can observe the form's value and be updated as the form is edited.
+        Nub creates a reference to the form model at a special place within the global model, under <b>/nub:forms</b>.
+        Each Nub form has a reference to itself created under this location using the form's name
+        (if the form isi unnamed then Nub will allocate a unique one; but this is rarely useful, as the name must be know
+        if other views are to reference it).
+    </p>
+    <p>
+        This is easiest understood using an example.
+        In the following example -
+        <ul>
+            <li>A form named <b>'some'</b> is marked as a <b>nub-form</b>.</li>
+            <li>This form has an input named <b>word</b>.</li>
+            <li>Elsewhere in the page, a view element is defined which will display the current value of the input.</li>
+        </ul>
+        <pre class="brush: xml">
+            &lt;form name="some" class="nub-form"&gt;
+                &lt;input name="word" type="text"/&gt;
+            ...
+            &lt;div class="nub-view" data="/nub:forms/some/word"/&gt;
+        </pre>
+    </p>
+    <p>
+        Nub forms are also able to submit data using Ajax, see the <a href="#remote-data">Remote Data</a> section below.
+    </p>
+    <h3>Select lists</h3>
+    <p>
+        It is often useful for the list of options displayed by a select list to be read from somewhere in the model.
+        This can be done by marking the SELECT element as a <b>nub-view</b> and giving it a <b>data</b> attribute.
+        If the data item stored at the location specified by the data attribute is an array then it will be used
+        to populate the select list's options.
+        If the data item is a 1-dimensional array then each option will have the same data and value; if the data
+        item is a 2-dimensional array then the first item of each array value is used as the option value and the second
+        item is used as the option label.
+    </p>
+    <p>
+        If the SELECT list element contains OPTION elements then these won't be replaced by the list data;
+        instead, these will be retained and will always be included at the top of the list.
+        This is useful, for example, if you always want to display a default item on the list:
+        <pre class="brush: xml">
+            &lt;select name="pattern" data="/wallpaper/patterns"&gt;
+                &lt;option&gt;Please select one...&lt;/option&gt;
+            &lt;/select&gt;
+        </pre>
+        Note that the difference between the select's <b>name</b> and <b>data</b> attributes:
+        the <i>data</i> attribute specifies where to read the data which generates the list;
+        while the <i>name</i> attribute specifies where to store the list's selected value.
+    </p>
+    <!--
+    <h3>Formatting views</h3>
+    -->
+    <h3>Functional views</h3>
+    <p>
+        Functions can be registered with Nub as views on data in the model.
+        This is useful when you want a value to be calculated from other values in the model, and you want that value to be
+        updated whenever the other values are updated.
+    </p>
+    <p>
+        To take a simple example, suppose you want to calculate a value as being the sum of two other values.
+        These values will be stored in this model under the location <b>/values</b>.
+        We can write a 'sum' function and register it with Nub using the following code:
+        <pre class="brush: js">
+            function sum() {
+                var a = $.nub.get('/values/a');
+                var b = $.nub.get('/values/b');
+                $.nub.set('/sum', a + b );
+            }
+            $.nub.view('/values', sum );
+        </pre>
+        The <b>nub.view</b> function allows a callback function to be registered which will be called whenever an update takes
+        place at the specified path.
+        Here, the path <b>/values</b> includes updates to <b>/values/a</b> and <b>/values/b</b>.
+    </p>
+    <p>
+        The following HTML uses the previous view function to update the sum of two values whenever the user enters new ones.
+        <pre class="brush: xml">
+            &lt;input class="nub-view" type="text" name="/values/a"/&gt;
+            &lt;input class="nub-view" type="text" name="/values/b"/&gt;
+            &lt;span class="nub-view" data="/sum"&gt;&lt;/span&gt;
+        </pre>
+    </p>
+    <h3>Filters</h3>
+    <p>
+        Filters provide a way to generate new model data from other data already in the model, and are implemented
+        using functional views.
+        Conceptually, a filter is simply a function which is invoked whenever a data item is updated, and is passed the data
+        value as an argument; the value returned by the function is then stored at a separate model location.
+        Nub provides the <b>nub.filter</b> function for setting up a filter.
+    </p>
+    <p>
+        For example, suppose we have a list of people stored in the model, such as the following:
+        <pre class="brush: js" id="people-list">
+        [
+            { "name":"Andy Matland",   "age":27 },
+            { "name":"Jean Decaux",    "age":17 },
+            { "name":"Sandy Williams", "age":32 },
+            { "name":"Chen Dawei",     "age":16 }
+        ]
+        </pre>
+        If we then want a list generated which only contains the people on the list who are teenagers, we can use the following
+        code to set this up:
+        <pre class="brush: js">
+            function teenagersOnly( people ) {
+                var result = [];
+                for( var i = 0; i &lt; people.length; i++ ) {
+                    if( people[i].age &gt; 12 &amp;&amp; people[i].age &lt; 20 ) {
+                        result.push( people[i] );
+                    }
+                }
+                return result;
+            }
+            $.nub.filter('/everyone', teenagersOnly, '/teenagers');
+        </pre>
+        The <b>nub.filter</b> command takes three arguments:
+        <ol>
+        <li>The first is the data to be fed into the filter.
+        Here, our original list is stored in the model at <b>/everyone</b>.</li>
+        <li>The second is the filter function.
+        The list at /everyone is read from the model and passed to this function.</li>
+        <li>The third is where in the model to store the value returned by the filter.</li>
+        </ol>
+    </p>
+    <p>
+        Filters can also take arguments, see the <a href="nub-api.html">Nub API</a> documentation for more details.
+    </p>
+    <h2 id="remote-data">Remote data</h2>
+    <p>
+        Nub provides a number of mechanisms for passing data between the model and a remote server using Ajax.
+    </p>
+    <h3>Using forms</h3>
+    <p>
+        Form models (<a href="#forms">see above</a>), as well as providing access to data within a page form, can also be used to
+        read data from and write data to a server.
+        Nub uses the form's ACTION and METHOD attributes to decide where to write data to and what HTTP method to use.
+        The form model object can then be used to initiate the Ajax operation.
+    </p>
+    <p>
+        Take the following form as an example:
+        <pre class="brush: xml">
+        &lt;form name="login" method="POST" action="/login" class="nub-form"&gt;
+            &lt;input type="text" name="username"/&gt;
+            &lt;input type="password" name="password"/&gt;
+        &lt;/form&gt;
+        </pre>
+        This is obviously a login form, and has been marked as a Nub form (i.e. because of the class attribute on the FORM element).
+        Nub can be used to perform the login action over Ajax with the following code, which for example could be called when the
+        user clicks a login button:
+        <pre class="brush: js">
+            var form = $.nub.get('/nub:forms/login');
+            form.submit({
+                success: function() { alert('Login success!'); }
+            });
+        </pre>
+        The first line reads the form object from the Nub model.
+        This object actually represents the form model, and provides a number of methods for accessing data and loading or
+        submitting data.
+        The next line submits the form data using Ajax.
+        The Ajax call will by default use the HTTP method and action URI specified on the form element;
+        however, these can all be overriden using the argument passed to this function.
+        (The argument takes all the same properties of the standard jQuery ajax() function call).
+        If the form submit is successful then an alert is displayed with a success message.
+    </p>
+    <p>
+        The form object also allows data to be loaded into the form over Ajax, see the <a href="nub-api.html">Nub API</a> documentation for more details.
+    </p>
+    <h3>Using remote objects</h3>
+    <p>
+        Remote objects are special objects within Nub's data model which read their data from a remote server using Ajax and
+        can write their data back to the server.
+        A remote object is created within the model with the <b>nub.remote</b> command:
+        <pre class="brush: js">
+            var account = $.nub.remote('/remote/account');
+        </pre>
+        This command creates a new remote object at the location <b>/remote/account</b> in the model.
+        (Placing all remote objects under <i>/remote</i> in the model is a Nub convention).
+        At this stage, the remote object doesn't contain any data.
+        Data could now be written to the object using <b>nub.set()</b>;
+        instead, here we will first load data from the server using the remote object's <b>httpGet</b> method:
+        <pre class="brush: js">
+            account.httpGet('/account-data');
+        </pre>
+        (Note that here, <b>/account-data</b> is a path on the server from which the HTML page hosting the code was loaded from,
+        and not a data path).
+        This command will load data from the specified server URI into the remote object.
+        Suppose that the server returns the following object:
+        <pre class="brush: js">
+            {
+                "name":     "Mindy Collins",
+                "type":     "guest",
+                "username": "mindyc"
+            }
+        </pre>
+        The data can now be referenced and displayed in a view using a path like <b>/remote/account/data/name</b>.
+        Note the 'data' component in the path.
+        A remote object always places the data it loads under a top-level property called 'data'.
+        Remote objects also supply a second top-level property called 'meta'.
+        This property is used to store information about the status of the data contained by the remote object.
+        This includes information such as the full URI the remote data was last loaded from and the status of the load
+        operation.
+    </p>
+    <p>
+        See the <a href="nub-api.html">Nub API</a> documentation for more information on the meta object, and the full set of methods available on a remote
+        object.
+    </p>
+    <h2>Lists</h2>
+    <p>
+        Nub provides a simple list framework for displaying array data stored in the model.
+        This framework allows HTML tables or lists (i.e. OL or UL elements) to be used to display list data using all the
+        formatting capabilities available in HTML.
+        The framework also supports paging of large lists and allows full customization of the list pager.
+    </p>
+    <p>
+        Before using the list framework it must be included in the page, after the line including the Nub plugin:
+        <pre class="brush: xml">
+            &lt;script src="jquery.nub-list.js"&gt;&lt;/script&gt;
+        </pre>
+        The list framework uses a couple of additional Nub classes to mark the elements within a page which are to be used by a
+        list:
+        <ul>
+        <li><b>nub-list-row</b>: This class is used to mark the element which is to be used as the row data template.
+        (i.e. within a table, this would be placed on a TR element, whilst on an unordered list it would be placed on a LI tag).
+        </li>
+        <li><b>nub-list-view</b>: This class is the list equivalent of the <b>nub-view</b> class, and is used to mark elements
+        which will be used to display row data.
+        It works in the exact same manner as the nub-view class, except that its data reference is always relative to a single row
+        of the list source data.
+        </li>
+        </ul>
+        The following example shows a simple list template, which could be used to display the
+        <a href="#people-list">people list</a> used above:
+        <pre class="brush: xml">
+            &lt;table id="people-list" data="/everyone"&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;Name&lt;/th&gt;
+                    &lt;th&gt;Age&lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;tr class="nub-list-row"&gt;
+                    &lt;td&gt;&lt;b class="nub-list-view" data="name"/&gt;&lt;td&gt;
+                    &lt;td class="nub-list-view" data="age"/&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+        </pre>
+        The list is then initialized using the <b>nubList</b> function:
+        <pre class="brush: js">
+            $('#people-list').nubList();
+        </pre>
+        The list framework supports a number of customization options and event callbacks; these are all described in the
+        <a href="nub-api.html">Nub API</a> documentation.
+    </p>
+    <div class="footer">
+        <a href="http://innerfunction.com/"><img src="imgs/if-button.png" align="middle"/></a>
+        &copy; InnerFunction Ltd., 2009-2011. All rights reserved.
+    </div>
+    </body>
+</html>
