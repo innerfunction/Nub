@@ -10,6 +10,7 @@ Project description
 Nub is a plugin for jQuery which adds MVC (Model-View-Controller) functionality to a page.
 Nub allows HTML elements on a page to act as views on a data model which will be refreshed everytime the model is updated.
 Nub provides many additional capabilities built on the basic MVC functionality, these include:
+
 * Functions for reading and writing data to and from a remote server using JSON + AJAX.
 * A list framework for displaying paged lists of data.
 * The ability to register callback functions as model views.
