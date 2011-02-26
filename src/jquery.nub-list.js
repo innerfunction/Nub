@@ -263,7 +263,7 @@
                         .append( $('<li>').append('<a>Last</a>').click( last ) );
                 },
                 // Function called to allow initialization of list elements.
-                oninit: function( list ) {}
+                oninit: function( listElement, pagerContainer ) {}
             }, opts );
             var lists = [];
             $(this).each(function() {

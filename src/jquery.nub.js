@@ -724,22 +724,22 @@
      * result and is used to update the model at the specified filter location.
      * The filter arguments are stored in the 'args' property at the filter location. The
      * filter result is stored in the 'result' property at the filter location.
-     * @filterRef:  The filter's location in the model.
-     * @dataRef:    The filter's source data location.
+     * @sourceRef:  The filter's source data location.
+     * @resultRef:  The filter's result location in the model.
      * @filterFn:   The filter function.
      */
-    $.nub.filter = function( filterRef, dataRef, filterFn ) {
-        $.nub.set( filterRef, { 'filter:args': {} } );
+    $.nub.filter = function( sourceRef, resultRef, filterFn ) {
+        $.nub.set( resultRef, { 'filter:args': {} } );
         // A functional view for invoking the filter function.
         function filterView( op, path ) {
-            var value = $.nub.get( dataRef );
-            var args = $.nub.get('filter:args', filterRef );
-            $.nub.set( filterRef, $.extend( filterFn( value, args ), { 'filter:args':args } ) );
+            var value = $.nub.get( sourceRef );
+            var args = $.nub.get('filter:args', resultRef );
+            $.nub.set( resultRef, $.extend( filterFn( value, args ), { 'filter:args':args } ) );
         }
         // Invoke the filter when the source data is updated.
-        $.nub.view( dataRef, filterView );
+        $.nub.view( sourceRef, filterView );
         // Invoke the filter when the filter arguments change.
-        $.nub.view('filter:args', filterView, filterRef, true );
+        $.nub.view('filter:args', filterView, resultRef, true );
     }
     /**
      * Initializers invoked by the $.nub.init function. Each initializer function is invoked as

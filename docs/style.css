@@ -1,0 +1,43 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 1em;
+}
+.header {
+    padding-bottom: 1em;
+    border-bottom: 3pt solid #56ADCC;
+}
+ul.contents {
+    padding-bottom: 1em;
+    border-bottom: 3pt solid #4A4A4A;
+    margin-bottom: 2em;
+}
+h3 {
+    background: #DFDFDF;
+    padding: 0.5em 1em 0.5em 1em;
+}
+table.arguments {
+    margin-top: 0.5em;
+}
+table.arguments td {
+    padding: 0.5em;
+}
+table.arguments tr td:first-child {
+    font-weight: bold;
+    vertical-align: top;
+    background: #FEF49B;
+}
+.example-view {
+    margin: 1em;
+    padding: 1em;
+    font-weight: bold;
+    background: #EDE38A;
+}
+.footer {
+    border-top: 3pt solid #4A4A4A;
+    padding-top: 1em;
+    font-size: small;
+}
+.footer img {
+    border: none;
+    margin-right: 0.5em;
+}

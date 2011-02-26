@@ -1,0 +1,534 @@
+<html>
+    <head>
+        <title>Nub API</title>
+        <link rel="stylesheet" type="text/css" href="style.css"/>
+    </head>
+    <body>
+    <h1 class="header">Nub API</h1>
+    <p>
+        This document describes the different methods and options made available by the Nub jQuery plugin and its
+        associated frameworks.
+    </p>
+    <p>
+        See the <a href="nub-intro.html">Nub introduction</a> for an overview of Nub and its capabilities.
+    </p>
+    <h2>Contents</h2>
+    <ul class="contents">
+    <li><a href="#nub.core">Core Nub</a>
+        <ul>
+        <li><a href="#nub.init">nub.init</a></li>
+        <li><a href="#nub.get">nub.get</a></li>
+        <li><a href="#nub.set">nub.set</a></li>
+        <li><a href="#nub.del">nub.del</a></li>
+        <li><a href="#nub.view">nub.view</a></li>
+        <li><a href="#nub.removeView">nub.removeView</a></li>
+        <li><a href="#nub.filter">nub.filter</a></li>
+        <li><a href="#nub.remote">nub.remote</a></li>
+        <li><a href="#htmlform">HTMLFormModel</a>
+            <ul>
+                <li><a href="#htmlform.serialize">serialize</a></li>
+                <li><a href="#htmlform.values">values</a></li>
+                <li><a href="#htmlform.setData">setData</a></li>
+                <li><a href="#htmlform.load">load</a></li>
+                <li><a href="#htmlform.submit">submit</a></li>
+            </ul>
+        </li>
+        <li><a href="#remote">RemoteModel</a>
+            <ul>
+                <li><a href="#remote.meta">meta</a></li>
+                <li><a href="#remote.data">data</a></li>
+                <li><a href="#remote.whenAvailable">whenAvailable</a></li>
+                <li><a href="#remote.load">load</a></li>
+                <li><a href="#remote.reload">reload</a></li>
+                <li><a href="#remote.reset">reset</a></li>
+                <li><a href="#remote.httpGet">httpGet</a></li>
+                <li><a href="#remote.httpPut">httpPut</a></li>
+                <li><a href="#remote.httpPost">httpPost</a></li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    <li><a href="#nubList">$.nubList</a>
+        <ul>
+            <li><a href="#nublist.list">'list'</a></li>
+            <li><a href="#nublist.options">options</a></li>
+            <ul>
+                <li><a href="#nubList.options.rowCount">rowCount</a></li>
+                <li><a href="#nubList.options.hideEmptyRows">hideEmptyRows</a></li>
+                <li><a href="#nubList.options.emptyRowCSS">emptyRowCSS</a></li>
+                <li><a href="#nubList.options.pager">pager</a></li>
+                <li><a href="#nubList.options.layoutPager">layoutPager</a></li>
+                <li><a href="#nubList.options.oninit">oninit</a></li>
+            </ul>
+        </ul>
+    </li>
+    </ul>
+    <h2 id="nub.core">Core Nub</h2>
+    <p>
+        These are the methods available on the core Nub object.
+        The object is available as <b>jQuery.nub</b> or <b>$.nub</b>.
+    </p>
+    <h3 id="nub.init">nub.init( [cx], [opts] )</h3>
+    <p>
+        Initialize any views or models within the DOM.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>cx</td>
+            <td>An element or jQuery object to use as the initialization context.
+                (i.e. only the context's descendent elements will be initialized).
+                Optional; defaults to <i>document.body</i>.
+            </td>
+        </tr>
+        <tr>
+            <td>opts</td>
+            <td>Options for customizing Nub's behaviour, which will only be applied to this initialization.
+                See <b>$.nub.model.options</b> in the source code for a list of the available options.
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="nub.get">nub.get( ref, [cx] )</h3>
+    <p>
+        Read a value from the model.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>ref</td>
+            <td>The reference path of the value to read.</td>
+        </tr>
+        <tr>
+            <td>cx</td>
+            <td>A context path, used to resolve <i>ref</i> to an absolute path when it's a relative reference.
+                (Optional).
+            </td>
+        </tr>
+        </table>
+    </p>
+    <p>
+        Returns the requested value.
+    </p>
+    <h3 id="nub.set">nub.set( ref, [value], [cx] )</h3>
+    <p>
+        Set a value in the model.
+        Notifies all observing views that the data item has been updated.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>ref</td>
+            <td>The reference path of the value being set.</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>The new value.</td>
+        </tr>
+        <tr>
+            <td>cx</td>
+            <td>A context path, used to resolve <i>ref</i> to an absolute path when it's a relative reference.
+                (Optional).
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="nub.del">nub.del( ref, [value], [cx] )</h3>
+    <p>
+        Delete a value from the model.
+        Notifies all observing views that the data item has been deleted.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>ref</td>
+            <td>The reference path of the value being deleted.</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>The value to be deleted.
+                The handling of this value is model dependent, but it can be used to control or limit the values removed
+                from the model.
+                (Optional).</td>
+        </tr>
+        <tr>
+            <td>cx</td>
+            <td>A context path, used to resolve <i>ref</i> to an absolute path when it's a relative reference.
+                (Optional).
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="nub.view">nub.view( ref, view, [cx] )</h3>
+    <p>
+        Register a view with the Nub controller.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>ref</td>
+            <td>The reference path of the value the view will observe.</td>
+        </tr>
+        <tr>
+            <td>view</td>
+            <td>The view object.
+                Can be any of the following types:
+                <ul>
+                <li><i>DOM element</i>: The element's content will be updated with the data item's value.</li>
+                <li><i>DOM attribute</i>: The attribute's value will be updated with the data item's value.</li>
+                <li><i>DOM text node</i>: The node's text value will be updated with the data item's value.</li>
+                <li><i>Form input</i>: The input's value will be updated with the data item's value.</li>
+                <li><i>function</i>: The function will be invoked whenever the data item is updated.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>cx</td>
+            <td>A context path, used to resolve <i>ref</i> to an absolute path when it's a relative reference.
+                (Optional).
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="nub.removeView">nub.removeView( ref, view, [cx] )</h3>
+    <p>
+        Deregister a view from the Nub controller.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>ref</td>
+            <td>The reference path of the value the view to be removed is observing.</td>
+        </tr>
+        <tr>
+            <td>view</td>
+            <td>The view object to be removed.</td>
+        </tr>
+        <tr>
+            <td>cx</td>
+            <td>A context path, used to resolve <i>ref</i> to an absolute path when it's a relative reference.
+                (Optional).
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="nub.filter">nub.filter( sourceRef, resultRef, filterFn )</h3>
+    <p>
+        Create a Nub filter.
+        Creates a new data item in the model whose value is calculated from another value in the model using a filter function.
+        The data item will be updated whenever the source data is updated.
+    </p>
+    <p>
+        It is possible to specify a set of arguments for the filter function.
+        These arguments are placed in the model at the path <b><i>resultRef</i> / filter:args</b>.
+        Any updates made to the arguments through the Nub controller will cause the filter to be re-evaluated.
+    <p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>sourceRef</td>
+            <td>The location of the filter's source data in the model.</td>
+        </tr>
+        <tr>
+            <td>resultRef</td>
+            <td>The location in the model where the filter's result data is stored.</td>
+        <tr>
+            <td>filterFn</td>
+            <td>The filter function.
+                The function will be invoked with two arguments:
+                <ul>
+                <li><b>data</b>: This is the filter's source data, as specified by the <i>sourceRef</i> path.</li>
+                <li><b>args</b>: Additional filter arguments.</li>
+                </ul>
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="nub.remote">nub.remote( ref, [opts] )</h3>
+    <p>
+        Create a <a href="#remote">remote model</a> in Nub's global model.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>ref</td>
+            <td>The location of the new remote model.</td>
+        </tr>
+        <tr>
+            <td>opts</td>
+            <td>Options to pass into the model. See <a href="#remote">RemoteModel</a> for details.</td>
+        </tr>
+        </table>
+    </p>
+    <hr/>
+    <h2 id="htmlform">HTMLFormModel</h2>
+    <p>
+        A HTMLFormModel is used to represent Nub forms within the model.
+        A Nub form is defined by marking a FORM element with the <b>nub-form</b> class.
+        Nub will insert the form model into the global model at the path <b>/nub:forms / <i>name</i></b>,
+        where <i>name</i> is the form's name as specified with the NAME attribute.
+        (If no NAME attribute is specified then Nub will allocate a unique value).
+        Once instantiated, the form model can be read from the model and the following methods can be used.
+    </p>
+    <h3 id="htmlform.serialize">serialize( )</h3>
+    <p>
+        Serialize the form's fields.
+        Uses the jQuery <b>serialize</b> function.
+        Returns a string containing the forms URL encoded values as a series of name/value pairs, separated by ampersands.
+    </p>
+    <h3 id="htmlform.values">values( )</h3>
+    <p>
+        Return an object containing all the form's field's values.
+        Values are stored on the object using properties named after the corresponding field.
+    </p>
+    <h3 id="htmlform.setData">setData( data )</h3>
+    <p>
+        Set form data.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>data</td>
+            <td>An object containing values for the form's fields.
+                The object's property names should correspond to the form's field names.
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="htmlform.load">load( [opts] )</h3>
+    <p>
+        Load data into the form over AJAX.
+        Uses the form's method and action values to specify default values for the AJAX request's type and URI.
+        All of these values can be overriden by the <i>opts</i> argument.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>opts</td>
+            <td>Additional options for the Ajax request.
+                This object corresponds to the <i>settings</i> object passed to the standard
+                <a href="http://api.jquery.com/jQuery.ajax/">jQuery $.ajax()</a> function.
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="htmlform.submit">submit( [opts] )</h3>
+    <p>
+        Submit the form data over AJAX.
+        Uses the form's method and action values to specify default values for the AJAX request's type and URI.
+        All of these values can be overriden by the <i>opts</i> argument.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>opts</td>
+            <td>Additional options for the Ajax request.
+                This object corresponds to the <i>settings</i> object passed to the standard
+                <a href="http://api.jquery.com/jQuery.ajax/">jQuery $.ajax()</a> function.
+            </td>
+        </tr>
+        </table>
+    </p>
+    <hr/>
+    <h2 id="remote">RemoteModel</h2>
+    <p>
+        A RemoteModel can be used to represent remote data within Nub's model.
+        Remote models should be created using the <a href="#nub.remote">$.nub.remote</a> method.
+    </p>
+    <p>
+        Remote models can be initialized with the following options:
+        <ul>
+        <li><b>serialize</b>: A function to use to serialize the model's data.
+            By default, serializes to JSON.</li>
+        <li><b>onrequest</b>: A function to be called before the model submits a HTTP request.
+            The function is passed an object with the following properties as the sole argument, and should
+            return the same or similar object with any required modifications:
+            <ul>
+            <li>url</li>
+            <li>type</li>
+            <li>dataType</li>
+            <li>success</li>
+            <li>error</li>
+            </ul>
+        </li>
+        <li><b>onload</b>: A function to be called before the model is updated after loading data.
+            The function is passed the complete remote model object.
+            The function can make modifications directly to this object, and the value it returns is the
+            value written into Nub's global object.
+        </li>
+        </ul>
+    </p>
+    <h3 id="remote.meta">meta</h3>
+    <p>
+        This is a property of the remote model and contains information about the model's current status.
+        The meta object has the following properties:
+        <ul>
+        <li><b>uri</b>: The URI of the last AJAX request (i.e. the URI of any data loaded into the model).</li>
+        <li><b>timestamp</b>: The time the current data was loaded at.</li>
+        <li><b>status</b>: The current status of the remote model's data.
+            One of the following values:
+            <ul>
+            <li><i>preload</i>: No data has been loaded yet.</li>
+            <li><i>loading</i>: Data has been requested (using a GET request) but is not yet loaded.</li>
+            <li><i>submitting</i>: A PUT or POST request has been submitted but is not yet completed.</li>
+            <li><i>loaded</i>: Data has been loaded into the model.</li>
+            </ul>
+        </li>
+        <li><b>error</b>: The error (if any) associated with the last AJAX request.</li>
+        <li><b>ajax-status</b>: The status of the last AJAX request.</li>
+        <li><b>initData</b>: The data loaded by the last request</li>
+        </ul>
+    </p>
+    <h3 id="remote.data">data</h3>
+    <p>
+        This is a property of the remote model and contains the model's data.
+        All data loaded from the remote server will be placed under this property.
+    </p>
+    <h3 id="remote.whenAvailable">whenAvailable( callback, [repeat] )</h3>
+    <p>
+        Provide a function which will only be called once data has been loaded into the model.
+        If data has already been loaded when the method is called then the callback will be invoked immediately;
+        otherwise, it won't be called until (and unless) data is loaded into the remote model.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>callback</td>
+            <td>The function to be called once data is available.
+                The remote model object is passed as its only argument.
+            </td>
+        </tr>
+        <tr>
+            <td>repeat</td>
+            <td>If <i>true</i> then the function will be called each time data is loaded;
+                otherwise, the function will only be called once after the first data load.
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="remote.load">load( [opts] )</h3>
+    <p>
+        Load data into the model.
+    </p>
+    <p>
+        <b>Arguments:</b>
+        <table class="arguments">
+        <tr>
+            <td>opts</td>
+            <td>Additional options for the Ajax load request.
+                This object corresponds to the <i>settings</i> object passed to the standard
+                <a href="http://api.jquery.com/jQuery.ajax/">jQuery $.ajax()</a> function,
+                and will be passed to the model's <i>onrequest</i> function before it is passed to the ajax() function.
+            </td>
+        </tr>
+        </table>
+    </p>
+    <h3 id="remote.reload">reload( )</h3>
+    <p>
+        Reload the model's data using the same URI and HTTP method as the previous load request.
+    </p>
+    <h3 id="remote.reset">reset( )</h3>
+    <p>
+        Reset the model's data to what it was immediately after the last load request.
+    </p>
+    <h3 id="remote.httpmethods">HTTP methods</h3>
+    <p>
+        The following HTTP methods all accept arguments of the following types, in any order:
+        <ul>
+        <li><i>string</i>: Specify the request URI.</li>
+        <li><i>function</i>: Specify a callback function for successful requests.</li>
+        <li><i>object</i>: An options object.
+            This object corresponds to the <i>settings</i> object passed to the standard
+            <a href="http://api.jquery.com/jQuery.ajax/">jQuery $.ajax()</a> function.</li>
+        </ul>
+    </p>
+    <h3 id="remote.httpGet">httpGet( )</h3>
+    <p>
+        Load data into the model using a HTTP GET request.
+        See <a href="#remote.httpmethods">above</a> for method arguments.
+    </p>
+    <h3 id="remote.httpPut">httpPut( )</h3>
+    <p>
+        Load data into the model using a HTTP PUT request.
+        See <a href="#remote.httpmethods">above</a> for method arguments.
+    </p>
+    <h3 id="remote.httpPost">httpPost( )</h3>
+    <p>
+        Load data into the model using a HTTP POST request.
+        See <a href="#remote.httpmethods">above</a> for method arguments.
+    </p>
+    <hr/>
+    <h2 id="nubList">$.nubList( opts )</h2>
+    <p>
+        The <b>nubList</b> function is part of Nub's list framework and is used to initialize list elements and access
+        list objects.
+        The function is invoked as a method on the jQuery object, e.g. <b>$('#my-list-element').nubList()</b>.
+        Note that the function can only be applied to any HTML element, but TABLE, UL and OL elements will give predictable
+        results.
+    </p>
+    <p>
+        The next two items describe the 'opts' argument.
+    </p>
+    <h3 id="nublist.list">'list'</h3>
+    <p>
+        When the <i>opts</i> argument is the string <i>'list'</i> then the function will return the Nub list object associated
+        with the element wrapped by the jQuery object, if any.
+    </p>
+    <h3 id="nublist.options">options</h3>
+    <p>
+        An options object argument can be passed into the <i>nubList</i> function when initializing a list element.
+        The options object can have any of the following properties:
+    </p>
+    <h3 id="nubList.options.rowCount">rowCount</h3>
+    <p><i>number</i>; The number of visible rows on the list.</p>
+    <h3 id="nubList.options.hideEmptyRows">hideEmptyRows</h3>
+    <p><i>boolean</i>; If <i>true</i> then any rows without data will be hidden.</p>
+    <h3 id="nubList.options.emptyRowCSS">emptyRowCSS</h3>
+    <p><i>string</i>; The name of a CSS class to apply to empty rows.</p>
+    <h3 id="nubList.options.pager">pager</h3>
+    <p>
+        <i>boolean</i>; If <i>true</i> then display a list pager.
+        This will allow a user to page through data lists larger than the number of visible rows on the list.
+    </p>
+    <h3 id="nubList.options.layoutPager">layoutPager</h3>
+    <p>
+        <i>function</i>; Construct the DOM used to display the list's pager.
+        The function is passed the following arguments:
+        <ul>
+        <li><i>first</i>: A function setting the list to the first page. Use e.g. as a 'first page' icon click handler.</li>
+        <li><i>prev</i>: A function setting the list to the previous page. Use e.g. as a 'previous page' icon click handler.</li>
+        <li><i>$page</i>: A jQuery object wrapping HTML for displaying the current page number.
+        <li><i>next</i>: A function setting the list to the next page. Use e.g. as a 'next page' icon click handler.</li>
+        <li><i>last</i>: A function setting the list to the last page. Use e.g. as a 'last page' icon click handler.</li>
+        </ul>
+        The function should use jQuery's DOM manipulation methods to build and return a DOM representing the pager layout.
+        For an example function, see the Nub list framework's default pager layout function in <b>$.fn.nubList</b>.
+    </p>
+    <h3 id="nubList.options.oninit">oninit</h3>
+    <p>
+        <i>function</i>; Called once the list DOM has been setup, and which can be used to perform additional initialization of
+        the list's elements.
+        The function is passed two arguments:
+        <ul>
+        <li><i>listElement</i>: The list element.</li>
+        <li><i>pagerContainer</i>: The element containing the list pager.</li>
+        </ul>
+    </p>
+    <div class="footer">
+        <a href="http://innerfunction.com/"><img src="imgs/if-button.png" align="middle"/></a>
+        &copy; InnerFunction Ltd., 2009-2011. All rights reserved.
+    </div>
+    </body>
+</html>
