@@ -2,7 +2,8 @@ About this project
 ==================
 
 This project contains version 2.0 of Nub.
-Previous versions can be found at (https://github.com/juliangoacher/jquery.nub).
+Previous versions can be found at (https://github.com/juliangoacher/jquery.nub)
+
 
 Project description
 ===================
@@ -61,3 +62,4 @@ Licence
 =======
 
 Nub is released under a dual GPL / MIT licence.
+
