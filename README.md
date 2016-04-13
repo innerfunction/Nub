@@ -1,10 +1,7 @@
 About this project
 ==================
 
-This project contains version 2.0 of Nub. You can see the full doc at: http://innerfunction.com/jquery.nub/current/docs/nub-intro.html
-
-
-Previous versions can be found at (https://github.com/juliangoacher/jquery.nub)
+This project contains version 2.0 of Nub. Previous versions can be found at (https://github.com/juliangoacher/jquery.nub)
 
 
 Project description
@@ -42,8 +39,8 @@ Write data to the model and watch the page update!
 Documentation
 =============
 
-The [Nub intro](http://innerfunction.com/nub/nub-intro.html) document gives a good overview of all Nub's functions and capabilities.
-The [Nub API](http://innerfunction.com/nub/nub-api.html) document gives more detail information on the functions and objects available in Nub.
+The [Nub intro](http://innerfunction.com/jquery.nub/current/docs/nub-intro.html) document gives a good overview of all Nub's functions and capabilities.
+The [Nub API](http://innerfunction.com/jquery.nub/current/docs/nub-api.html) document gives more detail information on the functions and objects available in Nub.
 
 Project contents
 ================
