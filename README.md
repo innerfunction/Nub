@@ -1,7 +1,9 @@
 About this project
 ==================
 
-This project contains version 2.0 of Nub.
+This project contains version 2.0 of Nub. You can see the full doc at: (https://github.com/innerfunction/Nub)
+
+
 Previous versions can be found at (https://github.com/juliangoacher/jquery.nub)
 
 
