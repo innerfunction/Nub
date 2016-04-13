@@ -1,7 +1,7 @@
 About this project
 ==================
 
-This project contains version 2.0 of Nub. Previous versions can be found at [here](https://github.com/juliangoacher/jquery.nub)
+This project contains version 2.0 of Nub. Previous versions can be found [here](https://github.com/juliangoacher/jquery.nub)
 
 
 Project description
